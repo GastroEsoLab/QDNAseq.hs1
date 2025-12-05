@@ -1,10 +1,10 @@
 [![DOI](https://zenodo.org/badge/306393966.svg)](https://zenodo.org/badge/latestdoi/306393966)
 
-# QDNAseq.hg38: QDNAseq bin annotation for hg38
+# QDNAseq.hs1: QDNAseq bin annotation for hs.1
 
->QDNAseq bin annotation for the human genome build hg38
+>QDNAseq bin annotation for the human genome build hs.1
 
-This package provides QDNAseq bin annotations of size `1, 5, 10, 15, 30, 50, 100, 500 and 1000` kbp for the human genome build hg38.The bin annotations are created using the steps mentioned in QDNAseq vignette and also [here](https://github.com/ccagc/QDNAseq/issues/59).
+This package provides QDNAseq bin annotations of size `1, 5, 10, 15, 30, 50, 100, 500 and 1000` kbp for the human genome build hs.1.The bin annotations are created using the steps mentioned in QDNAseq vignette and also [here](https://github.com/ccagc/QDNAseq/issues/59).
 
 
 ## Installation
@@ -12,24 +12,24 @@ This package provides QDNAseq bin annotations of size `1, 5, 10, 15, 30, 50, 100
 Install the package from GitHub:
 
 ``` r
-#Install the QDNAseq.hg38 package using remotes
-remotes::install_github("asntech/QDNAseq.hg38@main")
+#Install the QDNAseq.hs1 package using remotes
+remotes::install_github("asntech/QDNAseq.hs1@main")
 #or devtools
-devtools::install_github("asntech/QDNAseq.hg38@main")
+devtools::install_github("asntech/QDNAseq.hs1@main")
 ```
 
-## Use QDNAseq.hg38
+## Use QDNAseq.hs1
 
 ``` r
 library(QDNAseq)
-library(QDNAseq.hg38)
-bins <- getBinAnnotations(binSize=50, genome="hg38")
+library(QDNAseq.hs1)
+bins <- getBinAnnotations(binSize=50, genome="hs1")
 ```
 
-`QDNAseq.hg38` is adopted from [QDNAseq.hg19](https://doi.org/doi:10.18129/B9.bioc.QDNAseq.hg19). Find more details about QDNAseq here: https://doi.org/doi:10.18129/B9.bioc.QDNAseq
+`QDNAseq.hs1` is adopted from [QDNAseq.hg19](https://doi.org/doi:10.18129/B9.bioc.QDNAseq.hg19). Find more details about QDNAseq here: https://doi.org/doi:10.18129/B9.bioc.QDNAseq
 
 
-## Steps used to generate hg38 bins
+## Steps used to generate hs1 bins
 
 The following steps were used to create the bin files.
 
@@ -39,14 +39,14 @@ To calculate the average mappabilities, we need a mappability file in the `bigWi
 We used [GenMap](https://github.com/cpockrandt/genmap) to generate the 50mer mappability file with 2-mismatches.
 
 ``` bash
-# Download the pre-build index for GRCh38/hg38
+# Download the pre-build index for GRCh38/hs1
 wget http://ftp.imp.fu-berlin.de/pub/cpockrandt/genmap/indices/grch38-no-alt.tar.gz
 
 # Compute 50mer mappability file in wig format
 genmap map -K 50 -E 2 -I /path/to/index/grch38-no-alt -O /path/to/output/folder -w
 
 # Convert the wig file to bigwig
-wigToBigWig grch38-no-alt.wig <hg38.chrom.sizes> mappability.genmap.50mer.bigwig
+wigToBigWig grch38-no-alt.wig <hs1.chrom.sizes> mappability.genmap.50mer.bigwig
 
 ```
 
@@ -54,8 +54,8 @@ wigToBigWig grch38-no-alt.wig <hg38.chrom.sizes> mappability.genmap.50mer.bigwig
 
 ``` bash
 # Download ENCODE excluded regions aka blacklist regions
-wget https://github.com/Boyle-Lab/Blacklist/blob/master/lists/hg38-blacklist.v2.bed.gz?raw=true -o hg38-blacklist.v2.bed.gz
-gzip -d hg38-blacklist.v2.bed.gz
+wget https://github.com/Boyle-Lab/Blacklist/blob/master/lists/hs1-blacklist.v2.bed.gz?raw=true -o hs1-blacklist.v2.bed.gz
+gzip -d hs1-blacklist.v2.bed.gz
 ```
 
 ### 3. Control data set to calculate median residuals
@@ -128,12 +128,12 @@ done;
 
 ### Create the bin annotations
 
-Next we used `R v3.6.0` with `BSgenome.Hsapiens.UCSC.hg38` and `QDNAseq` to generate bins of size `1, 5, 10, 15, 30, 50, 100, 500 and 1000` kbp.
+Next we used `R v3.6.0` with `BSgenome.Hsapiens.UCSC.hs1` and `QDNAseq` to generate bins of size `1, 5, 10, 15, 30, 50, 100, 500 and 1000` kbp.
 
 ``` r
 
 library(Biobase)
-library(BSgenome.Hsapiens.UCSC.hg38)
+library(BSgenome.Hsapiens.UCSC.hs1)
 library(QDNAseq)
 library(future)
 
@@ -145,20 +145,20 @@ future::plan("multiprocess", workers = 4)
 
 for (binsize in c(1000, 500, 30, 15, 50, 10, 5, 1)) {
 
-  bins <- createBins(bsgenome=BSgenome.Hsapiens.UCSC.hg38, binSize=binsize)
+  bins <- createBins(bsgenome=BSgenome.Hsapiens.UCSC.hs1, binSize=binsize)
   bins$mappability <- calculateMappability(bins,
-    bigWigFile="/path/to/hg38/mappability.genmap.50mer.bigwig",
+    bigWigFile="/path/to/hs1/mappability.genmap.50mer.bigwig",
     bigWigAverageOverBed="/path/to/bigWigAverageOverBed")
 
   bins$blacklist <- calculateBlacklist(bins, bedFiles=c(
-    "/path/to/hg38-blacklist.v2.bed"))
+    "/path/to/hs1-blacklist.v2.bed"))
 
   bins$residual <- NA
   bins$use <- bins$chromosome %in% as.character(1:22) & bins$bases > 0
   
   #
   tg <- binReadCounts(bins,
-    path="/path/to/1000Genomes/hg38/bams", cache=TRUE)
+    path="/path/to/1000Genomes/hs1/bams", cache=TRUE)
 
   bins$residual <- iterateResiduals(tg)
   
@@ -179,16 +179,16 @@ for (binsize in c(1000, 500, 30, 15, 50, 10, 5, 1)) {
     author="Aziz Khan",
     date=Sys.time(),
     organism='Hsapiens',
-    build='hg38',
+    build='hs1',
     version=packageVersion("QDNAseq"),
     url=paste0(
-    "https://github.com/asntech/QDNAseq.hg38/raw/master/data/hg38.",
+    "https://github.com/asntech/QDNAseq.hs1/raw/master/data/hs1.",
     binsize, "kbp.SR50.rda"),
     md5=digest::digest(bins@data),
     sessionInfo=sessionInfo())
 
   attr(bins, "QDNAseq") <- QDNAseqInfo
-  save(bins, file=paste0("hg38.", binsize, "kbp.SR50.rda"), compress='xz')
+  save(bins, file=paste0("hs1.", binsize, "kbp.SR50.rda"), compress='xz')
 }
 
 ```
