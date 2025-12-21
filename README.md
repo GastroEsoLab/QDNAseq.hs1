@@ -13,9 +13,9 @@ Install the package from GitHub:
 
 ``` r
 #Install the QDNAseq.hs1 package using remotes
-remotes::install_github("asntech/QDNAseq.hs1@main")
+remotes::install_github("GastroEsoLab/QDNAseq.hs1@main")
 #or devtools
-devtools::install_github("asntech/QDNAseq.hs1@main")
+devtools::install_github("GastroEsoLab/QDNAseq.hs1@main")
 ```
 
 ## Use QDNAseq.hs1
@@ -23,46 +23,200 @@ devtools::install_github("asntech/QDNAseq.hs1@main")
 ``` r
 library(QDNAseq)
 library(QDNAseq.hs1)
-bins <- getBinAnnotations(binSize=50, genome="hs1")
+bins <- getBinAnnotations(binSize=500, genome="hs1")
 ```
 
-`QDNAseq.hs1` is adopted from [QDNAseq.hg19](https://doi.org/doi:10.18129/B9.bioc.QDNAseq.hg19). Find more details about QDNAseq here: https://doi.org/doi:10.18129/B9.bioc.QDNAseq
+`QDNAseq.hs1` is adapted from [QDNAseq.hg38](10.5281/zenodo.4274555). Find more details about QDNAseq here: https://doi.org/doi:10.18129/B9.bioc.QDNAseq
 
+`QDNAseq.hs1` has relatively strict mappability and filtering for artfactual regions. If you want more permissive annotations, please checkout [QDNAseq.chm13v2](https://github.com/RodrigoGM/QDNAseq.chm13v2).
 
-## Steps used to generate hs1 bins
+## Make your own annotations
+### Data & Tools Required
+- 50mer hoffman mappability track from [UCSC](https://hgdownload.gi.ucsc.edu/gbdb/hs1/hoffmanMappability/k50.Umap.MultiTrackMappability.bw)
+- Diploid samples from 1000 genomes for residual calculations (see bottom)
+- Repeat Masker File from [UCSC](https://hgdownload.soe.ucsc.edu/goldenPath/hs1/bigZips/hs1.repeatMasker.out.gz)
 
-The following steps were used to create the bin files.
+### 1. Create initial qDNASeq object
+``` R
+library(QDNAseq)
+library(BSgenome.Hsapiens.NCBI.T2T.CHM13v2.0)
+library(rtracklayer)
+library(GenomicRanges)
+library(Biobase)
+library(digest)
+library(future.apply)
 
-### 1. Create mappability file
-To calculate the average mappabilities, we need a mappability file in the `bigWig` format and the `bigWigAverageOverBed` binary.
+make_hs1_bins <- function(bin_size_kb, mappability_bw, bigwig_exec, genome, outdir) {
+  
+  message("\n====================================")
+  message("Generating bins for: ", bin_size_kb, " kb")
+  message("====================================")
+  
+  # Create bins
+  bins <- createBins(bsgenome = genome, binSize = bin_size_kb)
+  
+  message("Calculating mappability...")
+  
+  bins$mappability <- calculateMappability(bins, bigWigFile = mappability_bw, bigWigAverageOverBed = bigwig_exec)
+  
+  # Define usable bins
+  bins$use <- bins$chromosome %in% as.character(1:22) &
+    bins$bases > 0 &
+    bins$gc > 0 &
+    bins$mappability > 0.5
+  
+  # Create annotated dataframe
+  adf <- AnnotatedDataFrame(data = bins, varMetadata = data.frame(labelDescription = names(bins)))
+  
+  attr(adf, "QDNAseq") <- list(
+    author = Sys.getenv("USER"),
+    date = Sys.time(),
+    organism = "Hsapiens",
+    genome = "CHM13v2.0 / hs1",
+    binsize = paste0(bin_size_kb, "kb"),
+    mappability = "50mer 0 mismatch (GenMap)",
+    url = NA,
+    md5 = digest::digest(adf@data),
+    sessionInfo = capture.output(sessionInfo())
+  )
+  
+  outfile <- file.path(outdir, paste0("hs1.", bin_size_kb, "kb.SR50.rda"))
+  save(adf, file = outfile, compress = "xz")
+  
+  message("Saved: ", outfile)
+  return(outfile)
+}
 
-We used [GenMap](https://github.com/cpockrandt/genmap) to generate the 50mer mappability file with 2-mismatches.
+genome <- BSgenome.Hsapiens.NCBI.T2T.CHM13v2.0
+bin_sizes <- c(1000, 500, 100, 50, 30, 15, 10, 5, 1)
+mappability_bw <- "/mnt/shera/bkw2118/make_QDNASeq.hs1/map/k50.Umap.MultiTrackMappability.bw"
+bigwig_exec <- "/mnt/shera/bkw2118/make_QDNASeq.hs1/map/bigWigAverageOverBed"
+outdir <- "/home/bkw2118/qDNASeq.hs1/"
+dir.create(outdir, showWarnings = FALSE)
 
-``` bash
-# Download the pre-build index for GRCh38/hs1
-wget http://ftp.imp.fu-berlin.de/pub/cpockrandt/genmap/indices/grch38-no-alt.tar.gz
-
-# Compute 50mer mappability file in wig format
-genmap map -K 50 -E 2 -I /path/to/index/grch38-no-alt -O /path/to/output/folder -w
-
-# Convert the wig file to bigwig
-wigToBigWig grch38-no-alt.wig <hs1.chrom.sizes> mappability.genmap.50mer.bigwig
+for (bin_size in bin_sizes) {
+  make_hs1_bins(bin_size)
+}
 
 ```
 
-### 2. Get ENCODE excluded regions
+### 2. Calculate the Residuals against known diploid samples
 
-``` bash
-# Download ENCODE excluded regions aka blacklist regions
-wget https://github.com/Boyle-Lab/Blacklist/blob/master/lists/hs1-blacklist.v2.bed.gz?raw=true -o hs1-blacklist.v2.bed.gz
-gzip -d hs1-blacklist.v2.bed.gz
+``` R
+# compute_CHM13_residuals.R
+suppressPackageStartupMessages({
+  library(QDNAseq)
+  library(Biobase)
+  library(GenomicRanges)
+})
+
+options(future.globals.maxSize= 10 * 1024 ^ 3)
+
+# -------- USER CONFIG ----------
+bin_objects <- list.files('/home/bkw2118/qDNASeq.hs1/', pattern = '*.rda', full.names = T)   # change to the bin size you prefer
+controls_dir <- "/mnt/shera/bkw2118/make_QDNASeq.hs1/bams/"              # folder with .bam remapped to hs1
+bam_pattern <- "\\.bam$"                      # pattern to pick bam files
+# --------------------------------
+
+for (bins_rda in bin_objects){
+  message("Processing bin object: ", bins_rda)
+  out_residuals_rda <- gsub("\\.rda$", "_residuals.rda", bins_rda)
+  load(bins_rda)
+
+  # Get BAM file list
+  bamfiles <- list.files(controls_dir, pattern=bam_pattern, full.names=TRUE)
+
+  # Bin reads
+  message("Binning Reads")
+  readCounts <- binReadCounts(bins, bamfiles=bamfiles)
+  
+  # Filter bins
+  readCountsFiltered <- applyFilters(readCounts, residual=FALSE, blacklist=FALSE)
+  covs <- colSums(readCountsFiltered@assayData$counts)
+  
+  
+  # We have enough samples so we can filter out low-coverage ones
+  min_cov <- median(covs) * 0.25
+  keep <- covs > min_cov
+  if (sum(keep) < length(keep)) {
+    readCountsFiltered <- readCountsFiltered[, keep]
+  }
+
+  # Calculate residuals compared to the expected CN State (all diploid)  
+  message("Computing residuals with iterateResiduals()...")
+  residvec <- iterateResiduals(readCountsFiltered)
+  if (exists("adf")) {
+    adf@data$residual <- residvec
+    adf@data$use <- adf@data$use & !is.na(adf@data$residual)
+    save(adf, file = out_residuals_rda, compress = "xz")
+  } else {
+    bins$residual <- residvec
+    bins$use <- bins$use & !is.na(bins$residual)
+    save(bins, file = out_residuals_rda, compress = "xz")
+  }
+  
+  message("Residuals saved to: ", out_residuals_rda)
+}
 ```
 
-### 3. Control data set to calculate median residuals
+### 3. Create exclusion list based on repeats
+``` R
+# Load the repeat masker and merge with mappability data
+library(data.table)
+library(GenomicRanges)
+library(rtracklayer)
+library(MASS)
+options(scipen = 999)
 
-To calculate median residuals of the LOESS fit a control set of 38 samples from the 1000 Genomes Project were downloaded from ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/phase3/.
+# Import repeat masker data
+repeat_masker <- fread('/mnt/shera/bkw2118/make_QDNASeq.hs1/repeatMasker/hs1.repeatMasker.out')
+colnames(repeat_masker) <- c("swScore", "milliDiv", "milliDel", "milliIns", "genoName", 
+                             "genoStart", "genoEnd", "genoLeft", "strand", "repName", 
+                             "repClass", "repStart", "repEnd", "repLeft", 
+                             "id")
+prob_repeats <- repeat_masker[grep('Satellite|Simple_repeat|Low_complexity|LINE|LTR|rRNA|tRNA|srpRNA', repeat_masker$repClass),]
+repeat_GRanges <- GRanges(IRanges(prob_repeats$genoStart + 1, prob_repeats$genoEnd), 
+                           seqnames = prob_repeats$genoName)
+excl_regions <- reduce(repeat_GRanges)
 
-These 38 samples are matched the number mentioned in the QDNAseq instructions for hg19 annotations.
+# Filter out small regions
+excl_regions <- excl_regions[width(excl_regions) > 1000]
+
+# Convert into dataframe
+excl_df <- data.frame(seqnames = as.character(seqnames(excl_regions)),
+                      start = start(excl_regions),
+                      end = end(excl_regions))
+excl_df <- data.table(excl_df)
+
+# Merge into the QDNASeq objects
+qdna_files <- list.files('/home/bkw2118/QDNASeq.hs1', pattern = '*residuals.rda', full.names = TRUE)
+for(file in qdna_files){
+  load(file)
+  bins <- adf@data
+  
+  binSize <- max(unique(bins$end - bins$start + 1))
+  excl_df$bin_start <- floor((excl_df$start - 1) / binSize) * binSize + 1
+  excl_df$bin_end <- excl_df$bin_start + binSize - 1
+  excl_df$binName <- paste0(excl_df$seqnames, ":", excl_df$bin_start, "-", excl_df$bin_end)
+  
+  # Collapse by binName and get total number of bases excluded in each bin
+  binned_excl <- excl_df[, .(sum(end - start, na.rm = T)/binSize), by = binName]
+  binned_excl$exclude <- binned_excl$V1 >= 0.15
+  qdna_binNames <- paste0('chr', bins$chromosome, ":", bins$start, "-", bins$end)
+  
+  bins$repetitive <- binned_excl$exclude[match(qdna_binNames, binned_excl$binName, nomatch = NA)]
+  bins$repetitive[is.na(bins$repetitive)] <- FALSE
+  bins$use <- (bins$mappability > 0.5) & (bins$gc > 30) & (bins$gc < 55) & (!bins$repetitive)
+  adf@data <- bins
+  
+  ############# RENAME THE ADF TO THE FINAL NAME YOU WANT ##############
+  hs1.5kb.SR50 <- adf
+  ######################################################################
+  save(hs1.5kb.SR50, file = gsub('residuals', 'final', file))
+}
+```
+
+The Samples used for residual calculation were mostly derived from the 1000 genomes list
 
 ``` bash
 HG01101
@@ -105,90 +259,3 @@ NA19789
 NA19901
 ```
 
-Next, reads were trimmed to 50 bp using `trim_galore v0.4.4`, and the multiple files for each sample.
-
-``` bash
-for read in *.fq.gz; do
-  trim_galore --cores 32 --hardtrim5 50 $read
-done;
-```
-
-Next, these reads were aligned with `BWA v0.6.2` allowing two mismatches and end-trimming of bases
-with qualities below 40. bam files were sorted and indexed using `samtools v1.11`
-
-``` bash
-$REF_GENOME=/path/to/bwa/idex/
-for SAMPLE in *.fq.gz; do
-  bwa aln -t 16 -n 2 -q 40 $REF_GENOME ${SAMPLE}.fq.gz > ${SAMPLE}.sai
-  bwa samse $REF_GENOME ${SAMPLE}.sai ${SAMPLE}.fq.gz | samtools view --threads 16 -hb | samtools sort - > ${SAMPLE}.bam
-  samtools index ${SAMPLE}.bam
-  rm ${SAMPLE}.sai
-done;
-```
-
-### Create the bin annotations
-
-Next we used `R v3.6.0` with `BSgenome.Hsapiens.UCSC.hs1` and `QDNAseq` to generate bins of size `1, 5, 10, 15, 30, 50, 100, 500 and 1000` kbp.
-
-``` r
-
-library(Biobase)
-library(BSgenome.Hsapiens.UCSC.hs1)
-library(QDNAseq)
-library(future)
-
-#set virtual mem
-options(future.globals.maxSize= 8912896000)
-
-# change the current plan to access parallelization
-future::plan("multiprocess", workers = 4)
-
-for (binsize in c(1000, 500, 30, 15, 50, 10, 5, 1)) {
-
-  bins <- createBins(bsgenome=BSgenome.Hsapiens.UCSC.hs1, binSize=binsize)
-  bins$mappability <- calculateMappability(bins,
-    bigWigFile="/path/to/hs1/mappability.genmap.50mer.bigwig",
-    bigWigAverageOverBed="/path/to/bigWigAverageOverBed")
-
-  bins$blacklist <- calculateBlacklist(bins, bedFiles=c(
-    "/path/to/hs1-blacklist.v2.bed"))
-
-  bins$residual <- NA
-  bins$use <- bins$chromosome %in% as.character(1:22) & bins$bases > 0
-  
-  #
-  tg <- binReadCounts(bins,
-    path="/path/to/1000Genomes/hs1/bams", cache=TRUE)
-
-  bins$residual <- iterateResiduals(tg)
-  
-  bins <- AnnotatedDataFrame(bins,
-    varMetadata=data.frame(labelDescription=c(
-    "Chromosome name",
-    "Base pair start position",
-    "Base pair end position",
-    "Percentage of non-N nucleotides (of full bin size)",
-    "Percentage of C and G nucleotides (of non-N nucleotides)",
-    "Average mappability of 50mers with a maximum of 2 mismatches",
-    "Percent overlap with ENCODE blacklisted regions",
-    "Median loess residual from 1000 Genomes (50mers)",
-    "Whether the bin should be used in subsequent analysis steps"),
-    row.names=colnames(bins)))
-
-  QDNAseqInfo <- list(
-    author="Aziz Khan",
-    date=Sys.time(),
-    organism='Hsapiens',
-    build='hs1',
-    version=packageVersion("QDNAseq"),
-    url=paste0(
-    "https://github.com/asntech/QDNAseq.hs1/raw/master/data/hs1.",
-    binsize, "kbp.SR50.rda"),
-    md5=digest::digest(bins@data),
-    sessionInfo=sessionInfo())
-
-  attr(bins, "QDNAseq") <- QDNAseqInfo
-  save(bins, file=paste0("hs1.", binsize, "kbp.SR50.rda"), compress='xz')
-}
-
-```
