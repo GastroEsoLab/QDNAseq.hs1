@@ -1,8 +1,0 @@
-hs1.5kbp.SR50.rda filter=lfs diff=lfs merge=lfs -text
-hs1.1000kbp.SR50.rda filter=lfs diff=lfs merge=lfs -text
-hs1.100kbp.SR50.rda filter=lfs diff=lfs merge=lfs -text
-hs1.10kbp.SR50.rda filter=lfs diff=lfs merge=lfs -text
-hs1.15kbp.SR50.rda filter=lfs diff=lfs merge=lfs -text
-hs1.30kbp.SR50.rda filter=lfs diff=lfs merge=lfs -text
-hs1.500kbp.SR50.rda filter=lfs diff=lfs merge=lfs -text
-hs1.50kbp.SR50.rda filter=lfs diff=lfs merge=lfs -text
