@@ -17,6 +17,7 @@ devtools::install_github("GastroEsoLab/QDNAseq.hs1@main")
 
 ## Use QDNAseq.hs1
 
+
 ``` r
 library(QDNAseq)
 library(QDNAseq.hs1)
