@@ -31,7 +31,8 @@ In brief creating your own qDNASeq annotation object involves:
 3. Create a *poor man's* encode exclusion list by finding difficult to align genomic regions and excluding them
    - In our case we flag satellite regions, retrotransposase regions, centromeric regions, tRNA, rRNA, srpRNA regions as difficult
    - Difficult regions which are more than 2000 nucleotides long are retained
-4. Set the final `use` column. In this case, bins which do not include any difficult regions, and on average have a mappability score greater than 50, GC content greater than 30% and less than 70% are identified as useable. 
+4. Set the final `use` column. In this case, bins which do not include any difficult regions, and on average have a mappability score greater than 50, GC content greater than 30% and less than 70% are identified as useable.
+   - For annotations 10kbp and under, we exclude any bin that is entirely composed of difficult regions. Above 10kbp we use a 15% threshold. 
 
 ### Data & Tools Required
 - hs1 reference genome from [UCSC](https://hgdownload.soe.ucsc.edu/goldenPath/hs1/bigZips/hs1.fa.gz)
