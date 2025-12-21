@@ -36,9 +36,11 @@ In brief creating your own qDNASeq annotation object involves:
 4. Set the final `use` column. In this case, bins which do not include any difficult regions, and on average have a mappability score greater than 50, GC content greater than 30% and less than 70% are identified as useable. 
 
 ### Data & Tools Required
+- hs1 reference genome from [UCSC](https://hgdownload.soe.ucsc.edu/goldenPath/hs1/bigZips/hs1.fa.gz)
 - 50mer hoffman mappability track from [UCSC](https://hgdownload.gi.ucsc.edu/gbdb/hs1/hoffmanMappability/k50.Umap.MultiTrackMappability.bw)
 - Diploid samples from 1000 genomes for residual calculations (see bottom)
 - Repeat Masker File from [UCSC](https://hgdownload.soe.ucsc.edu/goldenPath/hs1/bigZips/hs1.repeatMasker.out.gz)
+- the [bigWigAverageOverBed](https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/bigWigAverageOverBed) tool from UCSC (link points to linux binaries)
 
 ### 1. Create initial qDNASeq object
 ``` R
