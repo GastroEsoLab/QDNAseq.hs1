@@ -1,7 +1,7 @@
 #########################################################################/**
-# @RdocData hg38.1000kbp.SR50
+# @RdocData hs1.1000kbp.SR50
 #
-# @title "Hg38 1000kbp bin annotations"
+# @title "hs1 1000kbp bin annotations"
 # 
 # \description{ The annotated data frame contains pre calculated data for
 # each bin describing:
@@ -20,9 +20,9 @@
 #*/#########################################################################
 
 #########################################################################/**
-# @RdocData hg38.500kbp.SR50
+# @RdocData hs1.500kbp.SR50
 #
-# @title "Hg38 500kbp bin annotations"
+# @title "hs1 500kbp bin annotations"
 # 
 # \description{ The annotated data frame contains pre calculated data for
 # each bin describing:
@@ -41,9 +41,9 @@
 #*/#########################################################################
 
 #########################################################################/**
-# @RdocData hg38.100kbp.SR50
+# @RdocData hs1.100kbp.SR50
 #
-# @title "Hg38 100kbp bin annotations"
+# @title "hs1 100kbp bin annotations"
 # 
 # \description{ The annotated data frame contains pre calculated data for
 # each bin describing:
@@ -62,9 +62,9 @@
 #*/#########################################################################
 
 #########################################################################/**
-# @RdocData hg38.50kbp.SR50
+# @RdocData hs1.50kbp.SR50
 #
-# @title "Hg38 50kbp bin annotations"
+# @title "hs1 50kbp bin annotations"
 # 
 # \description{ The annotated data frame contains pre calculated data for
 # each bin describing:
@@ -83,9 +83,9 @@
 #*/#########################################################################
 
 #########################################################################/**
-# @RdocData hg38.30kbp.SR50
+# @RdocData hs1.30kbp.SR50
 #
-# @title "Hg38 30kbp bin annotations"
+# @title "hs1 30kbp bin annotations"
 # 
 # \description{ The annotated data frame contains pre calculated data for
 # each bin describing:
@@ -104,9 +104,9 @@
 #*/#########################################################################
 
 #########################################################################/**
-# @RdocData hg38.15kbp.SR50
+# @RdocData hs1.15kbp.SR50
 #
-# @title "Hg38 15kbp bin annotations"
+# @title "hs1 15kbp bin annotations"
 # 
 # \description{ The annotated data frame contains pre calculated data for
 # each bin describing:
@@ -125,9 +125,9 @@
 #*/#########################################################################
 
 #########################################################################/**
-# @RdocData hg38.10kbp.SR50
+# @RdocData hs1.10kbp.SR50
 #
-# @title "Hg38 10kbp bin annotations"
+# @title "hs1 10kbp bin annotations"
 # 
 # \description{ The annotated data frame contains pre calculated data for
 # each bin describing:
@@ -146,9 +146,9 @@
 #*/#########################################################################
 
 #########################################################################/**
-# @RdocData hg38.5kbp.SR50
+# @RdocData hs1.5kbp.SR50
 #
-# @title "Hg38 5kbp bin annotations"
+# @title "hs1 5kbp bin annotations"
 # 
 # \description{ The annotated data frame contains pre calculated data for
 # each bin describing:
@@ -167,9 +167,9 @@
 #*/#########################################################################
 
 #########################################################################/**
-# @RdocData hg38.1kbp.SR50
+# @RdocData hs1.1kbp.SR50
 #
-# @title "Hg38 1kbp bin annotations"
+# @title "hs1 1kbp bin annotations"
 # 
 # \description{ The annotated data frame contains pre calculated data for
 # each bin describing:
