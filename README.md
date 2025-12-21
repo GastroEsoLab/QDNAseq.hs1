@@ -28,11 +28,11 @@ bins <- getBinAnnotations(binSize=500, genome="hs1")
 ## Make your own annotations
 In brief creating your own qDNASeq annotation object involves:
 1. Extract mappability scores for *n*-mer sized reads and create the initial annotation object with gc content.
-  - In our case we stick with the relatively conservative *50*mer window for mappability as Songbird uses fragments as short as 50 nucleotides for its true ploidy estimate.
+   - In our case we stick with the relatively conservative *50*mer window for mappability as Songbird uses fragments as short as 50 nucleotides for its true ploidy estimate.
 2. Use known diploid samples to find regions in the genome with artificially higher or lower read density. We have gathered ~250 samples from the 1000 genomes project in order to calculate these residuals for read depth correction. This may or may not be useful depending on your sequencing platform and library preparation.
 3. Create a *poor man's* encode exclusion list by finding difficult to align genomic regions and excluding them
-  - In our case we flag satellite regions, retrotransposase regions, centromeric regions, tRNA, rRNA, srpRNA regions as difficult
-  - Difficult regions which are more than 2000 nucleotides long are retained
+   - In our case we flag satellite regions, retrotransposase regions, centromeric regions, tRNA, rRNA, srpRNA regions as difficult
+   - Difficult regions which are more than 2000 nucleotides long are retained
 4. Set the final `use` column. In this case, bins which do not include any difficult regions, and on average have a mappability score greater than 50, GC content greater than 30% and less than 70% are identified as useable. 
 
 ### Data & Tools Required
