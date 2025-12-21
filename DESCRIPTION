@@ -10,7 +10,6 @@ Description: This package provides QDNAseq bin annotations for the
         human genome build hs1.
 Depends: R (>= 3.2.1), QDNAseq
 biocViews: ExperimentData, OrganismData, Homo_sapiens_Data
-LazyData: true
 License: GPL
 URL: https://github.com/GastroEsoLab/QDNAseq.hs1
 BugReports: https://github.com/GastroEsoLab/QDNAseq.hs1/issues
