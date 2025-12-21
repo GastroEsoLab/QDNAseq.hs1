@@ -11,12 +11,12 @@
 #   * bases: Percentage of non-N nucleotides (of full bin size),
 #   * gc: Percentage of C and G nucleotides (of non-N nucleotides),
 #   * mappability: Average mappability of 50mers with a maximum of 2 mismatches,
-#   * blacklist: Percent overlap with ENCODE blacklisted regions,
+#   * repeats: Proportion of bin with composed of repetitive elements,
 #   * residual: Median loess residual from 1000 Genomes (50mers),
 #   * use: Whether the bin should be used in subsequent analysis steps),
 # }
 #
-# @author "DS"
+# @author "BKW"
 #*/#########################################################################
 
 #########################################################################/**
@@ -32,12 +32,12 @@
 #   * bases: Percentage of non-N nucleotides (of full bin size),
 #   * gc: Percentage of C and G nucleotides (of non-N nucleotides),
 #   * mappability: Average mappability of 50mers with a maximum of 2 mismatches,
-#   * blacklist: Percent overlap with ENCODE blacklisted regions,
+#   * repeats: Proportion of bin with composed of repetitive elements,
 #   * residual: Median loess residual from 1000 Genomes (50mers),
 #   * use: Whether the bin should be used in subsequent analysis steps),
 # }
 #
-# @author "DS"
+# @author "BKW"
 #*/#########################################################################
 
 #########################################################################/**
@@ -53,12 +53,12 @@
 #   * bases: Percentage of non-N nucleotides (of full bin size),
 #   * gc: Percentage of C and G nucleotides (of non-N nucleotides),
 #   * mappability: Average mappability of 50mers with a maximum of 2 mismatches,
-#   * blacklist: Percent overlap with ENCODE blacklisted regions,
+#   * repeats: Proportion of bin with composed of repetitive elements,
 #   * residual: Median loess residual from 1000 Genomes (50mers),
 #   * use: Whether the bin should be used in subsequent analysis steps),
 # }
 #
-# @author "DS"
+# @author "BKW"
 #*/#########################################################################
 
 #########################################################################/**
@@ -74,12 +74,12 @@
 #   * bases: Percentage of non-N nucleotides (of full bin size),
 #   * gc: Percentage of C and G nucleotides (of non-N nucleotides),
 #   * mappability: Average mappability of 50mers with a maximum of 2 mismatches,
-#   * blacklist: Percent overlap with ENCODE blacklisted regions,
+#   * repeats: Proportion of bin with composed of repetitive elements,
 #   * residual: Median loess residual from 1000 Genomes (50mers),
 #   * use: Whether the bin should be used in subsequent analysis steps),
 # }
 #
-# @author "DS"
+# @author "BKW"
 #*/#########################################################################
 
 #########################################################################/**
@@ -95,12 +95,12 @@
 #   * bases: Percentage of non-N nucleotides (of full bin size),
 #   * gc: Percentage of C and G nucleotides (of non-N nucleotides),
 #   * mappability: Average mappability of 50mers with a maximum of 2 mismatches,
-#   * blacklist: Percent overlap with ENCODE blacklisted regions,
+#   * repeats: Proportion of bin with composed of repetitive elements,
 #   * residual: Median loess residual from 1000 Genomes (50mers),
 #   * use: Whether the bin should be used in subsequent analysis steps),
 # }
 #
-# @author "DS"
+# @author "BKW"
 #*/#########################################################################
 
 #########################################################################/**
@@ -116,12 +116,12 @@
 #   * bases: Percentage of non-N nucleotides (of full bin size),
 #   * gc: Percentage of C and G nucleotides (of non-N nucleotides),
 #   * mappability: Average mappability of 50mers with a maximum of 2 mismatches,
-#   * blacklist: Percent overlap with ENCODE blacklisted regions,
+#   * repeats: Proportion of bin with composed of repetitive elements,
 #   * residual: Median loess residual from 1000 Genomes (50mers),
 #   * use: Whether the bin should be used in subsequent analysis steps),
 # }
 #
-# @author "DS"
+# @author "BKW"
 #*/#########################################################################
 
 #########################################################################/**
@@ -137,12 +137,12 @@
 #   * bases: Percentage of non-N nucleotides (of full bin size),
 #   * gc: Percentage of C and G nucleotides (of non-N nucleotides),
 #   * mappability: Average mappability of 50mers with a maximum of 2 mismatches,
-#   * blacklist: Percent overlap with ENCODE blacklisted regions,
+#   * repeats: Proportion of bin with composed of repetitive elements,
 #   * residual: Median loess residual from 1000 Genomes (50mers),
 #   * use: Whether the bin should be used in subsequent analysis steps),
 # }
 #
-# @author "DS"
+# @author "BKW"
 #*/#########################################################################
 
 #########################################################################/**
@@ -158,33 +158,12 @@
 #   * bases: Percentage of non-N nucleotides (of full bin size),
 #   * gc: Percentage of C and G nucleotides (of non-N nucleotides),
 #   * mappability: Average mappability of 50mers with a maximum of 2 mismatches,
-#   * blacklist: Percent overlap with ENCODE blacklisted regions,
+#   * repeats: Proportion of bin with composed of repetitive elements,
 #   * residual: Median loess residual from 1000 Genomes (50mers),
 #   * use: Whether the bin should be used in subsequent analysis steps),
 # }
 #
-# @author "DS"
-#*/#########################################################################
-
-#########################################################################/**
-# @RdocData hs1.1kbp.SR50
-#
-# @title "hs1 1kbp bin annotations"
-# 
-# \description{ The annotated data frame contains pre calculated data for
-# each bin describing:
-#   * chromosome: Chromosome name,
-#   * start: Base pair start position,
-#   * end: Base pair end position,
-#   * bases: Percentage of non-N nucleotides (of full bin size),
-#   * gc: Percentage of C and G nucleotides (of non-N nucleotides),
-#   * mappability: Average mappability of 50mers with a maximum of 2 mismatches,
-#   * blacklist: Percent overlap with ENCODE blacklisted regions,
-#   * residual: Median loess residual from 1000 Genomes (50mers),
-#   * use: Whether the bin should be used in subsequent analysis steps),
-# }
-#
-# @author "DS"
+# @author "BKW"
 #*/#########################################################################
 
 # EOF
