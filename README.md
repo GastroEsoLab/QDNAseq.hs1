@@ -1,6 +1,6 @@
 # QDNAseq.hs1: QDNAseq bin annotation for hs.1
 
-This package provides QDNAseq bin annotations of size `1, 5, 10, 15, 30, 50, 100, 500 and 1000` kbp for the human genome build hs.1.The bin annotations are created using the steps mentioned in QDNAseq vignette and also from the [hg38 QDNASeq](https://github.com/asntech/QDNAseq.hg38).
+This package provides QDNAseq bin annotations of size `5, 10, 15, 30, 50, 100, 500 and 1000` kbp for the human genome build hs.1.The bin annotations are created using the steps mentioned in QDNAseq vignette and also from the [hg38 QDNASeq](https://github.com/asntech/QDNAseq.hg38).
 
 QDNAseq.hs1 is adapted from [QDNAseq.hg38](10.5281/zenodo.4274555). It was developed for use with [Songbird](https://github.com/GastroEsoLab/Songbird), so has relatively strict mappability and filtering for artfactual regions. If you want more permissive annotations, please checkout [QDNAseq.chm13v2](https://github.com/RodrigoGM/QDNAseq.chm13v2).
 
