@@ -1,6 +1,8 @@
 #########################################################################/**
 # @RdocData hs1.1000kbp.SR50
 #
+#' QDNAseq bin annotations for hs1, 50 kbp, SR50
+#'
 # @title "hs1 1000kbp bin annotations"
 # 
 # \description{ The annotated data frame contains pre calculated data for
@@ -18,6 +20,10 @@
 #
 # @author "BKW"
 #*/#########################################################################
+#' @docType data
+#' @name hs1.1000kbp.SR50
+#' @usage data(hs1.1000kbp.SR50)
+#' @format An \code{AnnotatedDataFrame} with bin annotations
 
 #########################################################################/**
 # @RdocData hs1.500kbp.SR50
@@ -39,6 +45,11 @@
 #
 # @author "BKW"
 #*/#########################################################################
+#' @docType data
+#' @name hs1.500kbp.SR50
+#' @usage data(hs1.500kbp.SR50)
+#' @format An \code{AnnotatedDataFrame} with bin annotations
+
 
 #########################################################################/**
 # @RdocData hs1.100kbp.SR50
@@ -60,6 +71,11 @@
 #
 # @author "BKW"
 #*/#########################################################################
+#' @docType data
+#' @name hs1.100kbp.SR50
+#' @usage data(hs1.100kbp.SR50)
+#' @format An \code{AnnotatedDataFrame} with bin annotations
+
 
 #########################################################################/**
 # @RdocData hs1.50kbp.SR50
@@ -81,6 +97,11 @@
 #
 # @author "BKW"
 #*/#########################################################################
+#' @docType data
+#' @name hs1.50kbp.SR50
+#' @usage data(hs1.50kbp.SR50)
+#' @format An \code{AnnotatedDataFrame} with bin annotations
+
 
 #########################################################################/**
 # @RdocData hs1.30kbp.SR50
@@ -102,6 +123,11 @@
 #
 # @author "BKW"
 #*/#########################################################################
+#' @docType data
+#' @name hs1.30kbp.SR50
+#' @usage data(hs1.30kbp.SR50)
+#' @format An \code{AnnotatedDataFrame} with bin annotations
+
 
 #########################################################################/**
 # @RdocData hs1.15kbp.SR50
@@ -123,6 +149,11 @@
 #
 # @author "BKW"
 #*/#########################################################################
+#' @docType data
+#' @name hs1.15kbp.SR50
+#' @usage data(hs1.15kbp.SR50)
+#' @format An \code{AnnotatedDataFrame} with bin annotations
+
 
 #########################################################################/**
 # @RdocData hs1.10kbp.SR50
@@ -144,6 +175,11 @@
 #
 # @author "BKW"
 #*/#########################################################################
+#' @docType data
+#' @name hs1.10kbp.SR50
+#' @usage data(hs1.10kbp.SR50)
+#' @format An \code{AnnotatedDataFrame} with bin annotations
+
 
 #########################################################################/**
 # @RdocData hs1.5kbp.SR50
@@ -165,5 +201,9 @@
 #
 # @author "BKW"
 #*/#########################################################################
+#' @docType data
+#' @name hs1.1kbp.SR50
+#' @usage data(hs1.1kbp.SR50)
+#' @format An \code{AnnotatedDataFrame} with bin annotations
 
 # EOF
